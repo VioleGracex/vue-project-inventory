@@ -2,12 +2,15 @@
   <div v-if="visible" :class="['item-details', { show: isVisible, hide: !isVisible }]">
     <div class="item-details-content">
       <div class="image-area">
-        <img v-if="item?.image" :src="item?.image" alt="Изображение предмета" />
+        <img v-if="item?.image" :src="item?.image || undefined" alt="Изображение предмета" />
         <div v-else class="placeholder"></div>
       </div>
       <div class="details-area">
         <div class="separator"></div>
-        <h2>{{ item?.title }}</h2>
+        <h2>
+          {{ item?.title }}
+          <small v-if="item?.quantity">({{ item?.quantity }})</small>
+        </h2>
         <p>{{ item?.description }}</p>
       </div>
       <div class="actions-area">
@@ -20,7 +23,7 @@
             type="number"
             placeholder="Введите количество"
             v-model="deleteQuantity"
-            :max="item?.quantity"
+            :max="item?.quantity ?? undefined"
             min="1"
             class="delete-input"
           />
@@ -37,13 +40,14 @@
 
 <script lang="ts">
 import { defineComponent, ref, watch } from 'vue'
+import type { Item } from './items.ts'
 
 export default defineComponent({
   name: 'ItemDetails',
   props: {
     item: {
-      type: Object,
-      default: () => ({}),
+      type: Object as () => Item | null,
+      default: () => null,
     },
     show: {
       type: Boolean,
@@ -53,7 +57,7 @@ export default defineComponent({
   emits: ['close', 'delete'],
   setup(props, { emit }) {
     const confirmDelete = ref(false)
-    const deleteQuantity = ref(1)
+    const deleteQuantity = ref<string | number>('') // Инициализация пустой строкой
     const visible = ref(false)
     const isVisible = ref(false)
     let timeoutId: number | null = null
@@ -67,10 +71,10 @@ export default defineComponent({
 
     watch(
       () => props.show,
-      async (newVal) => {
+      (newVal) => {
         if (newVal) {
           clearCloseTimeout()
-          confirmDelete.value = false // Reset confirmDelete to false when the details are shown
+          confirmDelete.value = false // Сбросить confirmDelete в false при показе деталей
           visible.value = true
           setTimeout(() => {
             isVisible.value = true
@@ -81,20 +85,23 @@ export default defineComponent({
             visible.value = false
             emit('close')
             timeoutId = null
-          }, 600) // Delay to match the slide out animation
+          }, 600) // Задержка для синхронизации с анимацией закрытия
         }
       },
     )
 
     watch(
       () => props.item,
-      (newVal) => {
-        confirmDelete.value = false // Reset confirmDelete to false when item changes
+      () => {
+        confirmDelete.value = false // Сбросить confirmDelete в false при изменении элемента
       },
     )
 
     const handleDelete = () => {
-      emit('delete', deleteQuantity.value)
+      const quantity = parseInt(deleteQuantity.value as string, 10)
+      if (!isNaN(quantity)) {
+        emit('delete', quantity)
+      }
     }
 
     const closeDetails = () => {
@@ -103,7 +110,7 @@ export default defineComponent({
         visible.value = false
         emit('close')
         timeoutId = null
-      }, 600) // Delay to match the slide out animation
+      }, 600) // Задержка для синхронизации с анимацией закрытия
     }
 
     return {

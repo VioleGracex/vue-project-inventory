@@ -24,7 +24,7 @@
           @dragend="onDragEnd"
         >
           <div class="grid-item">
-            <img :src="item.image" alt="Item Image" class="item-image" />
+            <img :src="item.image || undefined" alt="Item Image" class="item-image" />
             <div class="quantity-box">{{ item.quantity }}</div>
           </div>
         </div>
@@ -44,6 +44,7 @@
 import { defineComponent, reactive, toRefs, computed } from 'vue'
 import { items } from './items.ts'
 import ItemDetails from './ItemDetails.vue'
+import type { Item } from './items.ts'
 
 export default defineComponent({
   name: 'GridComponent',
@@ -51,13 +52,15 @@ export default defineComponent({
     ItemDetails,
   },
   setup() {
-    const initialItems = new Array(25).fill(null).map((_, index) => items[index] || null)
+    const initialItems = new Array<Item | null>(25)
+      .fill(null)
+      .map((_, index) => items[index] || null)
     const state = reactive({
       items: initialItems,
-      draggedIndex: null,
+      draggedIndex: null as number | null,
       showItemDetails: false,
-      selectedItem: {},
-      selectedItemIndex: null,
+      selectedItem: null as Item | null,
+      selectedItemIndex: null as number | null,
     })
 
     if (items.length > 25) {
@@ -96,7 +99,7 @@ export default defineComponent({
 
     const isScrollable = computed(() => state.items.length > 25)
 
-    const openItemDetails = (item, index) => {
+    const openItemDetails = (item: Item | null, index: number) => {
       if (item) {
         state.selectedItem = { ...item } // Ensure a new object reference is created
         state.selectedItemIndex = index
@@ -109,15 +112,17 @@ export default defineComponent({
       state.selectedItemIndex = null
     }
 
-    const deleteItem = (quantity) => {
+    const deleteItem = (quantity: number) => {
       const selectedItemIndex = state.selectedItemIndex
-      if (state.selectedItem && quantity > 0 && quantity <= state.selectedItem.quantity) {
-        state.items[selectedItemIndex].quantity -= quantity
-        if (state.items[selectedItemIndex].quantity === 0) {
-          state.items[selectedItemIndex] = null
+      if (state.selectedItem && quantity > 0 && quantity <= (state.selectedItem.quantity || 0)) {
+        if (selectedItemIndex !== null && state.items[selectedItemIndex]?.quantity) {
+          state.items[selectedItemIndex]!.quantity! -= quantity
+          if (state.items[selectedItemIndex]!.quantity === 0) {
+            state.items[selectedItemIndex] = null
+          }
+          state.showItemDetails = false
+          state.selectedItemIndex = null
         }
-        state.showItemDetails = false
-        state.selectedItemIndex = null
       }
     }
 
