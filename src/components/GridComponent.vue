@@ -32,7 +32,6 @@
       </div>
     </div>
     <ItemDetails
-      v-if="showItemDetails"
       :item="selectedItem"
       :show="showItemDetails"
       @close="closeItemDetails"
