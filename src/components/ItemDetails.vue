@@ -1,16 +1,25 @@
 <template>
   <div v-if="visible" :class="['item-details', { 'show': isVisible, 'hide': !isVisible }]">
     <div class="item-details-content">
-      <h2>{{ item?.title }}</h2>
-      <img :src="item?.image" alt="Item Image" />
-      <p>{{ item?.description }}</p>
-      <button @click="confirmDelete = true">Delete</button>
-      <div v-if="confirmDelete" class="delete-confirmation">
-        <p>Select quantity to delete:</p>
-        <input type="number" v-model="deleteQuantity" :max="item?.quantity" min="1" />
-        <div class="buttons">
-          <button class="cancel" @click="confirmDelete = false">Cancel</button>
-          <button class="confirm" @click="handleDelete">Confirm</button>
+      <div class="image-area">
+        <img v-if="item?.image" :src="item?.image" alt="Item Image" />
+        <div v-else class="placeholder"></div>
+      </div>
+      <div class="details-area">
+        <div class="separator"></div>
+        <h2>{{ item?.title }}</h2>
+        <p>{{ item?.description }}</p>
+      </div>
+      <div class="actions-area">
+        <div class="separator"></div>
+        <button v-show="!confirmDelete" @click="confirmDelete = true" class="delete-button">Delete</button>
+        <div v-show="confirmDelete" class="delete-confirmation">
+          <p>Select quantity to delete:</p>
+          <input type="number" v-model="deleteQuantity" :max="item?.quantity" min="1" class="delete-input" />
+          <div class="buttons">
+            <button class="cancel-button" @click="confirmDelete = false">Cancel</button>
+            <button class="confirm-button" @click="handleDelete">Confirm</button>
+          </div>
         </div>
       </div>
     </div>
