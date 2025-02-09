@@ -24,7 +24,7 @@
           @dragend="onDragEnd"
         >
           <div class="grid-item">
-            <img :src="item.image || undefined" alt="Item Image" class="item-image" />
+            <img :src="item.image || undefined" alt="Изображение предмета" class="item-image" />
             <div class="quantity-box">{{ item.quantity }}</div>
           </div>
         </div>
@@ -70,7 +70,7 @@ export default defineComponent({
     const onDragStart = (event: DragEvent, index: number) => {
       state.draggedIndex = index
       event.dataTransfer?.setData('text/plain', index.toString())
-      // Close item details and remove selected item
+      // Закрыть детали предмета и удалить выбранный элемент
       state.showItemDetails = false
       state.selectedItemIndex = null
     }
@@ -84,12 +84,12 @@ export default defineComponent({
       const draggedIndex = parseInt(event.dataTransfer?.getData('text/plain') || '', 10)
       if (isNaN(draggedIndex) || draggedIndex === index) return
 
-      // Move the item to the new position
+      // Переместить элемент в новую позицию
       const draggedItem = state.items[draggedIndex]
       state.items[draggedIndex] = state.items[index]
       state.items[index] = draggedItem
 
-      // Reset the dragged index
+      // Сбросить индекс перетаскивания
       state.draggedIndex = null
     }
 
@@ -101,7 +101,7 @@ export default defineComponent({
 
     const openItemDetails = (item: Item | null, index: number) => {
       if (item) {
-        state.selectedItem = { ...item } // Ensure a new object reference is created
+        state.selectedItem = { ...item } // Создать новую ссылку на объект
         state.selectedItemIndex = index
         state.showItemDetails = true
       }
@@ -110,6 +110,7 @@ export default defineComponent({
     const closeItemDetails = () => {
       state.showItemDetails = false
       state.selectedItemIndex = null
+      state.selectedItem = null // Сброс выбранного элемента
     }
 
     const deleteItem = (quantity: number) => {
@@ -122,6 +123,7 @@ export default defineComponent({
           }
           state.showItemDetails = false
           state.selectedItemIndex = null
+          state.selectedItem = null // Сброс выбранного элемента
         }
       }
     }

@@ -94,6 +94,7 @@ export default defineComponent({
       () => props.item,
       () => {
         confirmDelete.value = false // Сбросить confirmDelete в false при изменении элемента
+        deleteQuantity.value = '' // Очистить поле ввода
       },
     )
 
@@ -109,6 +110,7 @@ export default defineComponent({
       timeoutId = setTimeout(() => {
         visible.value = false
         emit('close')
+        deleteQuantity.value = '' // Очистить поле ввода
         timeoutId = null
       }, 600) // Задержка для синхронизации с анимацией закрытия
     }
