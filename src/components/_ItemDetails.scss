@@ -1,0 +1,113 @@
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+.item-details {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 300px;
+  height: 100%;
+  background-color: #000000;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+  transform: translateX(100%); /* Initially off-screen */
+  z-index: 10;
+
+  &.show {
+    animation: slideIn 0.6s forwards; /* Slide in animation */
+  }
+
+  &.hide {
+    animation: slideOut 0.6s forwards; /* Slide out animation */
+  }
+
+  .item-details-content {
+    padding: 20px;
+
+    h2 {
+      margin-top: 0;
+      color: white;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      margin-bottom: 20px;
+    }
+
+    p {
+      color: white;
+    }
+
+    button {
+      background-color: #fa7272;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      margin-top: 10px;
+
+      &:hover {
+        background-color: #e66060;
+      }
+    }
+
+    .delete-confirmation {
+      margin-top: 20px;
+
+      p {
+        margin: 0 0 10px;
+        color: white;
+      }
+
+      input {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+
+      .buttons {
+        display: flex;
+        justify-content: space-between;
+
+        .cancel {
+          background-color: white;
+          color: black;
+          border: 1px solid black;
+          padding: 5px 10px;
+        }
+
+        .confirm {
+          background-color: #fa7272;
+          color: white;
+          border: none;
+          padding: 5px 10px;
+        }
+      }
+    }
+  }
+
+  .close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: white;
+    cursor: pointer;
+  }
+}

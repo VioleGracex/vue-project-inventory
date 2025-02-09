@@ -5,6 +5,7 @@
   margin: 0 auto;
   padding: 2rem;
   font-weight: normal;
+  cursor: url('/src/assets/cursor_1.png'), auto; /* Normal cursor */
 }
 
 a,
@@ -32,4 +33,11 @@ a,
     grid-template-columns: 1fr 1fr;
     padding: 0 2rem;
   }
+}
+
+/* Global class for dragging cursor */
+.dragging {
+  cursor:
+    url('/src/assets/closed_glove.png') 12 12,
+    grabbing !important;
 }
