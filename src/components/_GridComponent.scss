@@ -101,6 +101,10 @@
     background: rgba(0, 0, 0, 0.1);
     border: 2px dashed #888;
   }
+
+  &.selected-item {
+    border: 2px solid #fa7272;
+  }
 }
 
 .grid-item {

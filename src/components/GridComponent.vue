@@ -42,7 +42,7 @@
 
 <script lang="ts">
 import { defineComponent, reactive, toRefs, computed } from 'vue'
-import { items } from './items'
+import { items } from './items.ts'
 import ItemDetails from './ItemDetails.vue'
 
 export default defineComponent({
@@ -56,10 +56,8 @@ export default defineComponent({
       items: initialItems,
       draggedIndex: null,
       showItemDetails: false,
-      selectedItem: null,
+      selectedItem: {},
       selectedItemIndex: null,
-      confirmDelete: false,
-      deleteQuantity: 1,
     })
 
     if (items.length > 25) {
@@ -69,6 +67,9 @@ export default defineComponent({
     const onDragStart = (event: DragEvent, index: number) => {
       state.draggedIndex = index
       event.dataTransfer?.setData('text/plain', index.toString())
+      // Close item details and remove selected item
+      state.showItemDetails = false
+      state.selectedItemIndex = null
     }
 
     const onDragOver = (event: DragEvent) => {
@@ -97,10 +98,9 @@ export default defineComponent({
 
     const openItemDetails = (item, index) => {
       if (item) {
-        state.selectedItem = item
+        state.selectedItem = { ...item } // Ensure a new object reference is created
         state.selectedItemIndex = index
         state.showItemDetails = true
-        state.confirmDelete = false
       }
     }
 
@@ -110,10 +110,11 @@ export default defineComponent({
     }
 
     const deleteItem = (quantity) => {
+      const selectedItemIndex = state.selectedItemIndex
       if (state.selectedItem && quantity > 0 && quantity <= state.selectedItem.quantity) {
-        state.selectedItem.quantity -= quantity
-        if (state.selectedItem.quantity === 0) {
-          state.items = state.items.map((i) => (i === state.selectedItem ? null : i))
+        state.items[selectedItemIndex].quantity -= quantity
+        if (state.items[selectedItemIndex].quantity === 0) {
+          state.items[selectedItemIndex] = null
         }
         state.showItemDetails = false
         state.selectedItemIndex = null

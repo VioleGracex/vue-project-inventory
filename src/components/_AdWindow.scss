@@ -1,0 +1,24 @@
+.ad-window {
+  width: 785px;
+  height: 72px;
+  border-radius: 12px;
+  border: 1px solid #4d4d4d;
+  background-color: #262626;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 16px;
+  box-sizing: border-box;
+}
+
+.ad-window-text {
+  color: white;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
